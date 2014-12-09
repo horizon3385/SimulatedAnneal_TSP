@@ -10,7 +10,7 @@ The algorithm follows the assumptions:
 * Eculidean distance from cities' X-Y coordinates
 * ……
 
-Script `SimulatedAnneal.py` is built with `Python` standard library.
+Script `SimulatedAnneal.py` is built with `Python` standard library. Press `Ctrl + c` at any time.
 
 ### Usage
 #### Input
