@@ -56,7 +56,7 @@ My best result:
 ]
 ```
 
-![alt text](https://github.com/horizon3385/SimulatedAnneal_TSP/blob/master/best_record.png)
+![alt text](best_record.png)
 
 ### Limitation
 The final optimized routine varies every time. Theoretically, the path converge to the shortest path *in probabiliy*. See more details in [wiki](http://en.wikipedia.org/wiki/Simulated_annealing).
@@ -65,6 +65,6 @@ An optimized path from grid points:
 
 run `python cities_grid.py 10 | python SimulatedAnneal.py --maxTemperature 3 --maxIterations 5000000`
 
-![alt text](https://github.com/horizon3385/SimulatedAnneal_TSP/blob/master/Grid.png)
+![alt text](Grid.png)
 
 **Good Luck!**
