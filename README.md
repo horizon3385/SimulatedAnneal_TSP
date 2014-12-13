@@ -59,7 +59,7 @@ My best result:
 ![alt text](best_record.png)
 
 ### Limitation
-The final optimized routine varies every time. Theoretically, the path converge to the shortest path *in probabiliy*. See more details in [wiki](http://en.wikipedia.org/wiki/Simulated_annealing).
+The final optimized routine varies every time. Theoretically, the path converge to the shortest path *in probability*. See more details in [wiki](http://en.wikipedia.org/wiki/Simulated_annealing).
 
 An optimized path from grid points:
 
