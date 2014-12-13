@@ -54,27 +54,7 @@ def main():
     import json
     import argparse
     from random import random
-    from math import sqrt, exp
-
-    #---- arguments ----#
-    parser = argparse.ArgumentParser(
-        description="""
-        Travelling Salesman's Problem (TSP)
-        with simulated annealing (SA) algorithm
-
-        Input cities' coordinate from JSON file.
-        Input JSON file should be like:
-        {
-            "x": [52.66, ...],
-            "y": [10.19, ...]
-        }""", formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument('--maxIterations', type=int, default=10**8, help='Maximum iteration steps')
-    parser.add_argument('--maxTemperature', type=float, default=30.0, help='Initiate temperature')
-    parser.add_argument('--minTemperature', type=float, default=0.001, help='Minimum temperature')
-    parser.add_argument('--pho', type=float, default=0.99, help='schedule temperature structure')
-    parser.add_argument('--length', type=int, default=100, help='initiate length in each specified temperature')
-    parser.add_argument('--length_increment', type=int, default=100, help='increment in step length in each specified temperature')
-    args = parser.parse_args()    
+    from math import sqrt, exp  
 
     #---- import cities coordinate ----#
     cities = json.load(sys.stdin)
@@ -93,6 +73,26 @@ def main():
             row.append(sqrt((x[i] - x[k])**2 + (y[i] - y[k])**2))
         dis_matrix.append(row)  
          
+    #---- arguments ----#
+    parser = argparse.ArgumentParser(
+        description="""
+        Travelling Salesman's Problem (TSP)
+        with simulated annealing (SA) algorithm
+
+        Input cities' coordinate from JSON file.
+        Input JSON file should be like:
+        {
+            "x": [52.66, ...],
+            "y": [10.19, ...]
+        }""", formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument('--maxIterations', type=int, default=10**8, help='Maximum iteration steps')
+    parser.add_argument('--maxTemperature', type=float, default=30.0, help='Initiate temperature')
+    parser.add_argument('--minTemperature', type=float, default=0.001, help='Minimum temperature')
+    parser.add_argument('--pho', type=float, default=0.99, help='schedule temperature structure')
+    parser.add_argument('--length', type=int, default=100, help='initiate length in each specified temperature')
+    parser.add_argument('--length_increment', type=int, default=100, help='increment in step length in each specified temperature')
+    args = parser.parse_args()
+    
     #---- initiate algorithm ----#
     path = sample(range(cnt), cnt)
     path.append(path[0])
@@ -111,9 +111,9 @@ def main():
                 temperature *= args.pho
                 args.length += args.length_increment
                 schedule_length = 0
-                print 'current iteration:\t%.2E\t' \
-                    'current temperature:\t%.2f\t' \
-                    'current total length:\t%.4f' % (iteration, temperature, new_path.length_total(path, matrix=dis_matrix))
+                print 'iterations:\t%.2E\t' \
+                    'temperature:\t%.2f\t' \
+                    'total length:\t%.4f' % (iteration, temperature, new_path.length_total(path, matrix=dis_matrix))
         except KeyboardInterrupt:
             break
 
@@ -124,21 +124,22 @@ def main():
     #path = [94, 99, 91, 45, 0, 87, 79, 63, 46, 82, 55, 40, 37, 23, 59, 3, 10, 49, 24, 17, 36, 71, 95, 52, 22, 76, 70, 90, 88, 6, 28, 73, 61, 39, 43, 32, 20, 16, 89, 97, 54, 75, 38, 65, 9, 58, 51, 47, 4, 30, 50, 78, 96, 35, 48, 69, 25, 7, 21, 15, 57, 12, 2, 98, 5, 77, 29, 44, 84, 62, 8, 86, 93, 27, 33, 83, 14, 18, 42, 31, 34, 13, 60, 64, 26, 68, 72, 80, 19, 81, 11, 41, 85, 67, 92, 53, 66, 1, 74, 56, 94]
     #new_path = NewPath(path[:100], 100)
     #---- solve cross path ----#
+    length = len(path)       
     def one_step_more(path):
-        """check all potential path to solve cross path"""
-        for i in range(1, len(path) - 4):
-            for k in range(i + 3, len(path) - 1):
-                new = new_path.revert_part(path, i, k)
-                if new_path.length_total(new, matrix=dis_matrix) < new_path.length_total(path, matrix=dis_matrix):
-                    path = new
+    	orig = path[:]
+    	orig_length = NewPath.length_total(path, matrix=dis_matrix)
+    	for i in range(1, length - 4):
+    		for k in range(i + 3, length - 1):
+    			temp = NewPath.revert_part(path, i, k)
+    			curr_length = NewPath.length_total(temp, matrix=dis_matrix)
+    			if curr_length < orig_length:
+    				path = temp
+    				orig_length = curr_length
+    	if not path == orig:
+    		one_step_more(path)
         return path
+    path = one_step_more(path)    
 
-    #---- recursive function??? ----#
-    while True:
-        if path == one_step_more(path):
-            break
-        path = one_step_more(path)
-    
     print '\noptimized cross path:'
     print path
     print 'updated total length: %.4f' % NewPath.length_total(path, matrix=dis_matrix)
