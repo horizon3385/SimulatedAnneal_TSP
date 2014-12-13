@@ -136,7 +136,7 @@ def main():
     				path = temp
     				orig_length = curr_length
     	if not path == orig:
-    		one_step_more(path)
+            return one_step_more(path)
         return path
     path = one_step_more(path)    
 
