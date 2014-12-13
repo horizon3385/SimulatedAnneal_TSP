@@ -25,8 +25,13 @@ Input city coordinates `cities-coordinate.json`  file in the following JSON form
 In command line run:
 
 ```
-cat cities-coordinate.json | python SimulatedAnneal.py
+cat cities-coordinate.json | python SimulatedAnneal.py 1>results.json 2>process.log
 ```
+
+Check intermedium and final result in `result.json` file
+
+Check log in `process.log` file. Note: logging filemode is `w`, overwrite previous log.
+
 #### Arguments
 Some arguments provided:
 
@@ -39,7 +44,7 @@ Some arguments provided:
 
 ### Results
 
-My best result:
+My best result for `cities-coordinate.json`:
 
 ```
 [

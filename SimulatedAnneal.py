@@ -52,9 +52,19 @@ def main():
 
     import sys
     import json
+    import logging
     import argparse
+
     from random import random
-    from math import sqrt, exp  
+    from math import sqrt, exp
+
+    #---- configurate log ----#
+    logging.basicConfig(
+    	filemode='w',
+    	format='[%(asctime)s][%(levelname)s]%(message)s', 
+    	datefmt='%Y-%m-%dT%H:%M:%S',
+    	level=logging.DEBUG
+    	)
 
     #---- import cities coordinate ----#
     cities = json.load(sys.stdin)
@@ -111,18 +121,14 @@ def main():
                 temperature *= args.pho
                 args.length += args.length_increment
                 schedule_length = 0
-                print 'iterations:\t%.2E\t' \
-                    'temperature:\t%.2f\t' \
-                    'total length:\t%.4f' % (iteration, temperature, new_path.length_total(path, matrix=dis_matrix))
+                logging.info('[iterations: %.2E  temperature: %4.2f  length: %8.4f]', iteration, temperature, NewPath.length_total(path, matrix=dis_matrix))
         except KeyboardInterrupt:
             break
 
-    print '\noptimized path:'
-    print path
-    print 'total length: %.4f' % new_path.length_total(path, matrix=dis_matrix)
+    output = {}
+    output.update({'intermedium': {'path': path, 'length': NewPath.length_total(path, matrix=dis_matrix)}})
     
     #path = [94, 99, 91, 45, 0, 87, 79, 63, 46, 82, 55, 40, 37, 23, 59, 3, 10, 49, 24, 17, 36, 71, 95, 52, 22, 76, 70, 90, 88, 6, 28, 73, 61, 39, 43, 32, 20, 16, 89, 97, 54, 75, 38, 65, 9, 58, 51, 47, 4, 30, 50, 78, 96, 35, 48, 69, 25, 7, 21, 15, 57, 12, 2, 98, 5, 77, 29, 44, 84, 62, 8, 86, 93, 27, 33, 83, 14, 18, 42, 31, 34, 13, 60, 64, 26, 68, 72, 80, 19, 81, 11, 41, 85, 67, 92, 53, 66, 1, 74, 56, 94]
-    #new_path = NewPath(path[:100], 100)
     #---- solve cross path ----#
     length = len(path)       
     def one_step_more(path):
@@ -140,9 +146,8 @@ def main():
         return path
     path = one_step_more(path)    
 
-    print '\noptimized cross path:'
-    print path
-    print 'updated total length: %.4f' % NewPath.length_total(path, matrix=dis_matrix)
+    output.update({'final': {'path': path, 'length': NewPath.length_total(path, matrix=dis_matrix)}})
+    json.dump(output, sys.stdout, encoding='utf-8')
 
 
 if __name__ == '__main__':
